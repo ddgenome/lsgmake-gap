@@ -20,7 +20,9 @@
 #
 #If this script is run with no arguments, it will try to figure out
 #what kind of directory it is in and make all the targets for that
-#directory.
+#directory.  If you have specified automatic calibration in the GERALD
+#configuration file, this script will pick that up and alter the
+#jobs submitted and their dependencies accordingly.
 #
 #Each target is submitted as a separate job to LSF and generates a separate
 #stdout/stderr file with a name like <tt>make-TARGET-JOBID.out</tt>.
