@@ -376,7 +376,7 @@ class SolexaMake
     end
 
     # set basename for job
-    @job_name_base = @run + '.' + @path.split(%r{/+}).last
+    @job_name_base = @run + '.' + File.basename(@path)
   end
 
   # the master method that submits all necessary make jobs to LSF
@@ -396,6 +396,7 @@ class SolexaMake
   def make_target
     puts "#{self.class}: submitting #{@target} job"
     bmake = BsubMake.new("#{@job_name_base}.#{@target}", @target)
+    bmake.dependency(@dependency) if @dependency
     bmake.submit
   end
 
@@ -493,6 +494,31 @@ end
 
 #director class to initiate all GERALD jobs
 class GeraldMake < SolexaMake
+  def initialize(options)
+    # call parent
+    super(options)
+
+    @paired = false
+    @autocal = 0
+    # check for GERALD config
+    config = @path + '/config.txt'
+    if File.exist?(config) && File.readable?(config)
+      # open config
+      File.open(config) do |conf|
+        while line = conf.gets
+          case line
+          when %r{ANALYSIS.*pair}
+            @paired = true
+          when %r{QCAL_SOURCE.*auto\d}
+            autore = Regexp.new(%r{auto(\d)})
+            autom = autore.match(line)
+            @autocal = Integer(autom[1]) if autom
+          end
+        end
+      end
+    end
+  end
+
   # glob pattern for GERALD directories
   def self.glob
     'GERALD_[0-9]'
@@ -510,9 +536,22 @@ class GeraldMake < SolexaMake
     qvals = MakeLanes.new(@job_name_base, 's_%I_qvals')
     qvals.dependency(tiles.job_name)
     qvals.submit or return false
+    @dependency = qvals.job_name
+
+    # autocalibration target
+    if @autocal > 0
+      if @paired
+        acal = BsubMake.new("#{@job_name_base}.N_qtable", "s_#{@autocal}_%I_qtable.txt")
+        acal.job_array([1, 2])
+      else # fragment
+        acal = BsubMake.new("#{@job_name_base}.qtable", "s_#{@autocal}_qtable.txt")
+      end
+      acal.dependency(qvals.job_name)
+      acal.submit or return false
+      @dependency = acal.job_name
+    end
 
     # make s_N (alignment) and all targets
-    @dependency = qvals.job_name
     super
  end
 end
