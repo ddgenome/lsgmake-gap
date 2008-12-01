@@ -32,8 +32,8 @@
 #the corresponding short option; the same is true for optional arguments.
 #
 #<tt>--dependency</tt> _LSFJOBID_::
-#    Make the first set of jobs submitted have a ended dependency on
-#    _LSFJOBID_.
+#    Make the first set of jobs submitted have a dependency on
+#    _LSFJOBID_ (see --status to set type of dependency).
 #
 #<tt>--help</tt>::
 #    Output this information.
@@ -62,6 +62,10 @@
 #<tt>--resource</tt> _RESOURCE_::
 #    In addition to the <tt>span[hosts=1]</tt> resource specification
 #    added to each bsub command, also specify the resource RESOURCE.
+#
+#<tt>--status</tt> _STATUS_::
+#    Use job status dependency of STATUS rather than done (finish normally
+#    with a zero exit value).
 #
 #<tt>--test</tt>::
 #    Just print out what commands would be run, do not actually submit
@@ -198,6 +202,7 @@ class BsubMake
   @@jobs = 1
   @@queue = ''
   @@resource = ''
+  @@status = 'done'
   @@test = false
 
   def initialize(job_name, target)
@@ -233,6 +238,14 @@ class BsubMake
     @@resource = resource
   end
 
+  # extra resource specifications for bsub command
+  def self.status
+    @@status
+  end
+  def self.status=(status)
+    @@status = status
+  end
+
   # if true, print what would be run (do not submit jobs)
   def self.test
     @@test
@@ -246,10 +259,10 @@ class BsubMake
     @job_name_array = '[' + indices.join(',') + ']'
   end
 
-  # define ended dependencies for other jobs
+  # define dependencies for other jobs
   def dependency(*dependencies)
-    # bsub -w 'ended("JOBNAME")'
-    deps = dependencies.map { |d| %Q{ended(#{d})} }
+    # bsub -w 'done("JOBNAME")'
+    deps = dependencies.map { |d| %Q{#{@@status}(#{d})} }
     @dependency = deps.join(' && ')
   end
 
@@ -312,7 +325,7 @@ class MakeLanes
     @@lanes = lanes.collect { |x| x.to_s }
   end
 
-  # set a single ended dependency for all jobs
+  # set a single dependency for all jobs
   def dependency(dep)
     @dependency = dep
   end
@@ -405,7 +418,7 @@ class SolexaMake
   # make s_N targets and all
   def make_all
     # s_N jobs
-    puts "#{self.class}: submitting s_N jobs"
+    puts "#{self.class}: submitting s_N job"
     lanes = MakeLanes.new(@job_name_base, 's_%I')
     lanes.dependency(@dependency) if @dependency
     return false if !lanes.submit
@@ -473,7 +486,7 @@ class BustardMake < SolexaMake
   # make phasing targets before s_N and all targets
   def make_all
     # lane phasing
-    puts "#{self.class}: submitting lane phasing jobs"
+    puts "#{self.class}: submitting lane phasing job"
     lane_phasing = MakeLanes.new(@job_name_base, 'Phasing/s_%I_phasing.xml')
     lane_phasing.dependency(@dependency) if @dependency
     return false if !lane_phasing.submit
@@ -564,7 +577,7 @@ OptionParser.new do |opts|
   opts.version = '0.12'
   opts.banner = "Usage: #{$pkg} [OPTIONS] [TARGET]"
 
-  opts.on('-d', '--dependency JOBID', 'Do not start jobs until job JOBID is ended') do |jobid|
+  opts.on('-d', '--dependency JOBID', 'Set dependency for initial job on JOBID') do |jobid|
     options[:dependency] = jobid
   end
   opts.on('-j', '--jobs N', Integer, 'Allow N jobs at once (default 1)') do |jobs|
@@ -585,6 +598,9 @@ OptionParser.new do |opts|
   end
   opts.on('-R', '--resource RESOURCE', 'Resource specification for bsub') do |resource|
     BsubMake.resource = resource
+  end
+  opts.on('-s', '--status STATUS', 'Use job dependency STATUS rather than done') do |status|
+    BsubMake.status = status
   end
   opts.on('-t', '--test', 'Just echo commands, do not submit') do |x|
     BsubMake.test = true
