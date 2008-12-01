@@ -533,23 +533,21 @@ class GeraldMake < SolexaMake
     tiles = BsubMake.new("#{@job_name_base}.tiles", 'tiles.txt')
     tiles.dependency(@dependency) if @dependency
     tiles.submit or return false
-
-    # qval targets
-    qvals = MakeLanes.new(@job_name_base, 's_%I_qvals')
-    qvals.dependency(tiles.job_name)
-    qvals.submit or return false
-    @dependency = qvals.job_name
+    # set dependecy for super jobs
+    @dependency = tiles.job_name
 
     # autocalibration target
     if @autocal > 0
+      puts "#{self.class}: submitting qtable job"
       if @paired
         acal = BsubMake.new("#{@job_name_base}.N_qtable", "s_#{@autocal}_%I_qtable.txt")
         acal.job_array([1, 2])
       else # fragment
         acal = BsubMake.new("#{@job_name_base}.qtable", "s_#{@autocal}_qtable.txt")
       end
-      acal.dependency(qvals.job_name)
+      acal.dependency(tiles.job_name)
       acal.submit or return false
+      # reset dependency for super jobs
       @dependency = acal.job_name
     end
 
