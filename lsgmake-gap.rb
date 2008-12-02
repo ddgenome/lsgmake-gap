@@ -522,7 +522,7 @@ class BustardMake < SolexaMake
       # lane phasing
       puts "#{self.class}: submitting lane phasing job"
       lane_phasing = MakeLanes.new(@job_name_base, 'phasing_%I_finished.txt')
-      lane_phasing.dependency(@dependency) if @dependency
+      lane_phasing.dependency(matrix.job_name)
       lane_phasing.submit or return false
 
       # phasing
