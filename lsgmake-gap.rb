@@ -473,32 +473,83 @@ class FirecrestMake < SolexaMake
     # see if we should run Bustard
     return true if @options[:target] != 'recursive'
     make_subdir(BustardMake, @all_job_name)
- end
+  end
 end
 
 #director class to initiate all Bustard jobs
 class BustardMake < SolexaMake
+  def initialize(options)
+    # call parent
+    super(options)
+
+    check_version
+  end
   # glob pattern for Bustard directories
   def self.glob
     'Bustard[0-9]'
   end
 
+  # check version to set dependency chain
+  def check_version
+    @matrix = false
+    if (%r{^Bustard1.3}.match(File.basename(@path)))
+      @matrix = true
+    end
+  end
+
+  # make matrix and phasing targets
+  def make_matrix_phasing
+    # see if matrix and new-style phasing targets are needed
+    if @matrix
+      # lane matrix
+      puts "#{self.class}: submitting lane matrix job"
+      lane_matrix = MakeLanes.new(@job_name_base, 'matrix_%I_finished.txt')
+      lane_matrix.dependency(@dependency) if @dependency
+      lane_matrix.submit or return false
+
+      # matrix
+      puts "#{self.class}: submitting matrix job"
+      matrix = BsubMake.new("#{@job_name_base}.matrix", 'matrix_finished.txt')
+      matrix.dependency(lane_matrix.job_name)
+      matrix.submit or return false
+
+      # lane phasing
+      puts "#{self.class}: submitting lane phasing job"
+      lane_phasing = MakeLanes.new(@job_name_base, 'phasing_%I_finished.txt')
+      lane_phasing.dependency(@dependency) if @dependency
+      lane_phasing.submit or return false
+
+      # phasing
+      puts "#{self.class}: submitting phasing job"
+      phasing = BsubMake.new("#{@job_name_base}.phasing", 'phasing_finished.txt')
+      phasing.dependency(lane_phasing.job_name)
+      phasing.submit or return false
+    else # old-style phasing targets
+      # lane phasing
+      puts "#{self.class}: submitting lane phasing job"
+      lane_phasing = MakeLanes.new(@job_name_base, 'Phasing/s_%I_phasing.xml')
+      lane_phasing.dependency(@dependency) if @dependency
+      lane_phasing.submit or return false
+
+      # phasing
+      puts "#{self.class}: submitting phasing job"
+      phasing = BsubMake.new("#{@job_name_base}.phasing", 'Phasing/phasing.xml')
+      phasing.dependency(lane_phasing.job_name)
+      phasing.submit or return false
+    end
+
+    # set dependecy for s_N jobs
+    @dependency = phasing.job_name
+
+    true
+  end
+
   # make phasing targets before s_N and all targets
   def make_all
-    # lane phasing
-    puts "#{self.class}: submitting lane phasing job"
-    lane_phasing = MakeLanes.new(@job_name_base, 'Phasing/s_%I_phasing.xml')
-    lane_phasing.dependency(@dependency) if @dependency
-    return false if !lane_phasing.submit
-
-    # phasing
-    puts "#{self.class}: submitting phasing job"
-    phasing = BsubMake.new("#{@job_name_base}.phasing", 'Phasing/phasing.xml')
-    phasing.dependency(lane_phasing.job_name)
-    return false if !phasing.submit
+    # make the correct pre-requisites
+    make_matrix_phasing or return false
 
     # make s_N (base calling) and all targets
-    @dependency = phasing.job_name
     super or return false
 
     # see if we should run GERALD
