@@ -24,7 +24,9 @@
 #
 #If you have specified automatic calibration in the GERALD
 #configuration file, this script will pick that up and alter the
-#jobs submitted and their dependencies accordingly.
+#jobs submitted and their dependencies accordingly.  Note that you will
+#need to use provide the --with-qval option to goat_pipeline.py for
+#auto-calibration to work.
 #
 #The targets and dependencies in Bustard changed in GAPipeline1.3.  This
 #automatically detects that and adjusts the targets/dependencies
