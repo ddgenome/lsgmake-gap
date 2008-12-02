@@ -513,6 +513,17 @@ class GeraldMake < SolexaMake
     # call parent
     super(options)
 
+    # check for auto-calibration
+    check_acal
+  end
+
+  # glob pattern for GERALD directories
+  def self.glob
+    'GERALD_[0-9]'
+  end
+
+  # determing if auto-calibration targets are needed
+  def check_acal
     @paired = false
     @autocal = 0
     # check for GERALD config
@@ -532,11 +543,6 @@ class GeraldMake < SolexaMake
         end
       end
     end
-  end
-
-  # glob pattern for GERALD directories
-  def self.glob
-    'GERALD_[0-9]'
   end
 
   # make tiles.txt before s_N and all targets
