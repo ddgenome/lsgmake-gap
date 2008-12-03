@@ -583,7 +583,7 @@ class GeraldMake < SolexaMake
 
   # determing if auto-calibration targets are needed
   def check_acal
-    @paired = false
+    @reads = 1
     @autocal = 0
     # check for GERALD config
     config = @path + '/config.txt'
@@ -592,9 +592,11 @@ class GeraldMake < SolexaMake
       File.open(config) do |conf|
         while line = conf.gets
           case line
-          when %r{ANALYSIS.*pair}
-            @paired = true
+          when %r{USE_BASES}
+            # determine the number of reads
+            @reads = line.split(' ', 2)[1].count(',') + 1
           when %r{QCAL_SOURCE.*auto\d}
+            # determine what lane is being used for auto calibration
             autore = Regexp.new(%r{auto(\d)})
             autom = autore.match(line)
             @autocal = Integer(autom[1]) if autom
@@ -617,17 +619,22 @@ class GeraldMake < SolexaMake
     # autocalibration target
     if @autocal > 0
       puts "#{self.class}: submitting qtable job"
-      if @paired
-        qtable1 = BsubMake.new("#{@job_name_base}.s_1_qtable", "s_#{@autocal}_1_qtable.txt")
-        qtable1.dependency(tiles.job_name)
-        qtable1.submit or return false
-        qtable = BsubMake.new("#{@job_name_base}.s_2_qtable", "s_#{@autocal}_2_qtable.txt")
-        qtable.dependency(qtable1.job_name)
+      if @reads > 1
+        # ensure qtable not local to upto block
+        qtable = nil
+        dep_name = tiles.job_name
+        # create qtable for each read
+        1.upto(@reads) do |r|
+          qtable = BsubMake.new("#{@job_name_base}.s_#{@autocal}_#{r}_qtable", "s_#{@autocal}_#{r}_qtable.txt")
+          qtable.dependency(dep_name)
+          qtable.submit or return false
+          dep_name = qtable.job_name
+        end
       else # fragment
         qtable = BsubMake.new("#{@job_name_base}.qtable", "s_#{@autocal}_qtable.txt")
         qtable.dependency(tiles.job_name)
+        qtable.submit or return false
       end
-      qtable.submit or return false
       # reset dependency for super jobs
       @dependency = qtable.job_name
     end
