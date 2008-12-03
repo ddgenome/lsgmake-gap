@@ -618,15 +618,18 @@ class GeraldMake < SolexaMake
     if @autocal > 0
       puts "#{self.class}: submitting qtable job"
       if @paired
-        acal = BsubMake.new("#{@job_name_base}.N_qtable", "s_#{@autocal}_%I_qtable.txt")
-        acal.job_array([1, 2])
+        qtable1 = BsubMake.new("#{@job_name_base}.s_1_qtable", "s_#{@autocal}_1_qtable.txt")
+        qtable1.dependency(tiles.job_name)
+        qtable1.submit or return false
+        qtable = BsubMake.new("#{@job_name_base}.s_2_qtable", "s_#{@autocal}_2_qtable.txt")
+        qtable.dependency(qtable1.job_name)
       else # fragment
-        acal = BsubMake.new("#{@job_name_base}.qtable", "s_#{@autocal}_qtable.txt")
+        qtable = BsubMake.new("#{@job_name_base}.qtable", "s_#{@autocal}_qtable.txt")
+        qtable.dependency(tiles.job_name)
       end
-      acal.dependency(tiles.job_name)
-      acal.submit or return false
+      qtable.submit or return false
       # reset dependency for super jobs
-      @dependency = acal.job_name
+      @dependency = qtable.job_name
     end
 
     # make s_N (alignment) and all targets
