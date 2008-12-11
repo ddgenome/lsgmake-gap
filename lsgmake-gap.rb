@@ -619,22 +619,10 @@ class GeraldMake < SolexaMake
     # autocalibration target
     if @autocal > 0
       puts "#{self.class}: submitting qtable job"
-      if @reads > 1
-        # ensure qtable not local to upto block
-        qtable = nil
-        dep_name = tiles.job_name
-        # create qtable for each read
-        1.upto(@reads) do |r|
-          qtable = BsubMake.new("#{@job_name_base}.s_#{@autocal}_#{r}_qtable", "s_#{@autocal}_#{r}_qtable.txt")
-          qtable.dependency(dep_name)
-          qtable.submit or return false
-          dep_name = qtable.job_name
-        end
-      else # fragment
-        qtable = BsubMake.new("#{@job_name_base}.qtable", "s_#{@autocal}_qtable.txt")
-        qtable.dependency(tiles.job_name)
-        qtable.submit or return false
-      end
+      qtable = BsubMake.new("#{@job_name_base}.s_#{@autocal}_QTABLES", "s_#{@autocal}_QTABLES")
+      qtable.dependency(tiles.job_name)
+      qtable.submit or return false
+
       # reset dependency for super jobs
       @dependency = qtable.job_name
     end
