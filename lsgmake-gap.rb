@@ -598,7 +598,6 @@ class GeraldMake < SolexaMake
 
   # determing if auto-calibration targets are needed
   def check_acal
-    @reads = 1
     @autocal = 0
     # check for GERALD config
     config = @path + '/config.txt'
@@ -607,9 +606,6 @@ class GeraldMake < SolexaMake
       File.open(config) do |conf|
         while line = conf.gets
           case line
-          when %r{USE_BASES}
-            # determine the number of reads
-            @reads = line.split(' ', 2)[1].count(',') + 1
           when %r{QCAL_SOURCE.*auto\d}
             # determine what lane is being used for auto calibration
             autore = Regexp.new(%r{auto(\d)})
@@ -634,7 +630,8 @@ class GeraldMake < SolexaMake
     # autocalibration target
     if @autocal > 0
       puts "#{self.class}: submitting qtable job"
-      qtable = BsubMake.new("#{@job_name_base}.s_#{@autocal}_QTABLES", "s_#{@autocal}_QTABLES")
+      target = "s_#{@autocal}_QTABLES"
+      qtable = BsubMake.new("#{@job_name_base}.#{target}", target)
       qtable.dependency(tiles.job_name)
       qtable.submit or return false
 
