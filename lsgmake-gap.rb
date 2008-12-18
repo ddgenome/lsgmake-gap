@@ -207,6 +207,7 @@ end
 # 
 class BsubMake
   attr_reader :job_name, :target
+  attr_accessor :jobs
   @@jobs = 1
   @@queue = ''
   @@resource = ''
@@ -220,6 +221,7 @@ class BsubMake
     @submitted = false
     @dependency = ''
     @job_name_array = ''
+    @jobs = @@jobs
   end
 
   # number of jobs to run in parallel
@@ -277,21 +279,24 @@ class BsubMake
   # submit the jobs to the default LSF queue
   def submit
     return false if @submitted
-    bsub = Array.new(['bsub', '-n', @@jobs.to_s])
-    if @@queue.length > 0
-      bsub.push('-q', @@queue)
-    end
+    # create bsub command
+    bsub = Array.new(['bsub'])
+    bsub.push('-n', @jobs.to_s) if @jobs > 1
+    bsub.push('-q', @@queue) if @@queue.length > 0
     bsub.push('-R', "span[hosts=1] #{@@resource}")
     bsub.push('-o', "make-#{@target}-%J.out".gsub(%r{/+}, '-'))
     bsub.push('-J', @job_name + @job_name_array)
-    if @dependency.length > 0
-      bsub.push('-w', @dependency)
-    end
+    bsub.push('-w', @dependency) if @dependency.length > 0
+
     # append the actual make command
-    bsub.push('make', '-j', @@jobs.to_s, @target.gsub(/%I/, '${LSB_JOBINDEX}'))
+    bsub.push('make')
+    bsub.push('-j', @jobs.to_s) if @jobs > 1
+    bsub.push(@target.gsub(/%I/, '${LSB_JOBINDEX}'))
+
+    # just echo if testing
+    bsub.unshift('echo') if @@test
 
     # run the command
-    bsub.unshift('echo') if @@test
     if !system(*bsub)
       return false
     end
@@ -436,6 +441,8 @@ class SolexaMake
     all = BsubMake.new("#{@job_name_base}.all", 'all')
     @all_job_name = all.job_name
     all.dependency(lanes.job_name)
+    # avoid make parallelization bug
+    all.jobs = 1
     all.submit
   end
 
