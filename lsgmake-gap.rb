@@ -278,12 +278,20 @@ class BsubMake
 
   # submit the jobs to the default LSF queue
   def submit
+    # do not submit twice
     return false if @submitted
+
+    # initialize resource request
+    resource = @@resource
+
     # create bsub command
     bsub = Array.new(['bsub'])
-    bsub.push('-n', @jobs.to_s) if @jobs > 1
+    if @jobs > 1
+      bsub.push('-n', @jobs.to_s)
+      resource += ' span[hosts=1]'
+    end
     bsub.push('-q', @@queue) if @@queue.length > 0
-    bsub.push('-R', "span[hosts=1] #{@@resource}")
+    bsub.push('-R', resource) if resource.length > 0
     bsub.push('-o', "make-#{@target}-%J.out".gsub(%r{/+}, '-'))
     bsub.push('-J', @job_name + @job_name_array)
     bsub.push('-w', @dependency) if @dependency.length > 0
