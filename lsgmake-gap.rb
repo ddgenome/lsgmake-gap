@@ -532,7 +532,7 @@ class BustardMake < SolexaMake
 
       # matrix
       puts "#{self.class}: submitting matrix job"
-      matrix = BsubMake.new("#{@job_name_base}.matrix", 'matrix_finished.txt')
+      matrix = BsubMake.new("#{@job_name_base}.matrix", 'matrix')
       matrix.dependency(lane_matrix.job_name)
       matrix.submit or return false
 
