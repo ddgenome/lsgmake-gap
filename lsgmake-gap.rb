@@ -674,7 +674,7 @@ end
 options = {}
 OptionParser.new do |opts|
   opts.release = $pkg
-  opts.version = '0.12'
+  opts.version = '0.13'
   opts.banner = "Usage: #{$pkg} [OPTIONS] [TARGET]"
 
   opts.on('-b', '--bsub-options BSUBOPTIONS', 'Add options to bsub commands') do |bsub_options|
