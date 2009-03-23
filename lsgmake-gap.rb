@@ -39,6 +39,9 @@
 #If an argument to a long option is mandatory, it is also mandatory for
 #the corresponding short option; the same is true for optional arguments.
 #
+#<tt>--bsub-options</tt> _BSUBOPTIONS_::
+#    Pass along _BSUBOPTIONS_ to all bsub commands.
+#
 #<tt>--dependency</tt> _LSFJOBID_::
 #    Make the first set of jobs submitted have a dependency on
 #    _LSFJOBID_ (see --status to set type of dependency).
@@ -211,6 +214,7 @@ end
 class BsubMake
   attr_reader :job_name, :target
   attr_accessor :jobs
+  @@bsub_options = ''
   @@id = ''
   @@jobs = 1
   @@queue = ''
@@ -226,6 +230,14 @@ class BsubMake
     @dependency = ''
     @job_name_array = ''
     @jobs = @@jobs
+  end
+
+  # supply arbitrary command-line options to bsub
+  def self.bsub_options
+    @@bsub_options
+  end
+  def self.bsub_options=(bsub_options)
+    @@bsub_options = bsub_options
   end
 
   # unique id to put in job name
@@ -307,6 +319,7 @@ class BsubMake
     bsub.push('-o', "make-#{@target}-%J.out".gsub(%r{/+}, '-'))
     bsub.push('-J', @job_name + @job_name_array)
     bsub.push('-w', @dependency) if @dependency.length > 0
+    bsub.push(@@bsub_options) if @@bsub_options.length > 0
 
     # append the actual make command
     bsub.push('make')
@@ -664,6 +677,9 @@ OptionParser.new do |opts|
   opts.version = '0.12'
   opts.banner = "Usage: #{$pkg} [OPTIONS] [TARGET]"
 
+  opts.on('-b', '--bsub-options BSUBOPTIONS', 'Add options to bsub commands') do |bsub_options|
+    BsubMake.bsub_options = bsub_options
+  end
   opts.on('-d', '--dependency JOBID', 'Set dependency for initial job on JOBID') do |jobid|
     options[:dependency] = jobid
   end
