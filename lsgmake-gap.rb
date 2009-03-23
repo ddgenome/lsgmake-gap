@@ -46,6 +46,9 @@
 #<tt>--help</tt>::
 #    Output this information.
 #
+#<tt>--id</tt> _ID_::
+#    Specify unique identifier, _ID_, to incorporate into job name.
+#
 #<tt>--jobs</tt> N::
 #    Run N jobs on a single node.  N should be equal to the number of slots
 #    on each node.  The default N is 1.  Each target is sent to a single node
@@ -160,7 +163,7 @@
 #David Dooling <mailto:ddooling@wustl.edu>
 #
 #= COPYRIGHT
-#Copyright (C) 2008 Washington University in St. Louis
+#Copyright (C) 2009 Washington University in St. Louis
 #
 #This program is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -208,6 +211,7 @@ end
 class BsubMake
   attr_reader :job_name, :target
   attr_accessor :jobs
+  @@id = ''
   @@jobs = 1
   @@queue = ''
   @@resource = ''
@@ -216,12 +220,20 @@ class BsubMake
 
   def initialize(job_name, target)
     # set job name, removing illegal characters
-    @job_name = 's' + job_name.gsub(%r{[^\-.\w]+}, '-')
+    @job_name = 's' + @@id + job_name.gsub(%r{[^\-.\w]+}, '-')
     @target = target
     @submitted = false
     @dependency = ''
     @job_name_array = ''
     @jobs = @@jobs
+  end
+
+  # unique id to put in job name
+  def self.id
+    @@id
+  end
+  def self.id=(id)
+    @@id = id
   end
 
   # number of jobs to run in parallel
@@ -654,6 +666,9 @@ OptionParser.new do |opts|
 
   opts.on('-d', '--dependency JOBID', 'Set dependency for initial job on JOBID') do |jobid|
     options[:dependency] = jobid
+  end
+  opts.on('-i', '--id ID', 'Add identifier to job name') do |id|
+    BsubMake.id = id
   end
   opts.on('-j', '--jobs N', Integer, 'Allow N jobs at once (default 1)') do |jobs|
     if jobs < 1
