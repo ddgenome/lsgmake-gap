@@ -67,6 +67,9 @@
 #    and have a GERALD configuration file that selects specific lanes
 #    for analysis.
 #
+#<tt>--make</tt> _MAKE_::
+#    Run MAKE rather than make(1).
+#
 #<tt>--path</tt> _PATH_::
 #    Run make in directory _PATH_ rather than current directory.
 #
@@ -217,6 +220,7 @@ class BsubMake
   @@bsub_options = ''
   @@id = ''
   @@jobs = 1
+  @@make = 'make'
   @@queue = ''
   @@resource = ''
   @@status = 'done'
@@ -254,6 +258,14 @@ class BsubMake
   end
   def self.jobs=(jobs)
     @@jobs = jobs
+  end
+
+  # make command
+  def self.make
+    @@make
+  end
+  def self.make=(make)
+    @@make = make
   end
 
   # queue to submit jobs to
@@ -322,7 +334,7 @@ class BsubMake
     bsub.push(@@bsub_options) if @@bsub_options.length > 0
 
     # append the actual make command
-    bsub.push('make')
+    bsub.push(@@make)
     bsub.push('-j', @jobs.to_s) if @jobs > 1
     bsub.push(@target.gsub(/%I/, '${LSB_JOBINDEX}'))
 
@@ -695,6 +707,9 @@ OptionParser.new do |opts|
   opts.on('-l', '--lanes K,L,N,M', Array,
           'Only make the provided lane targets') do |lanes|
     MakeLanes.lanes = lanes
+  end
+  opts.on('-m', '--make MAKE', 'Invoke MAKE rather than make') do |make|
+    BsubMake.make = make
   end
   opts.on('-p', '--path PATH', 'Run make in directory PATH') do |path|
     options[:path] = path
