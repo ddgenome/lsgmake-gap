@@ -1,8 +1,8 @@
 #! /bin/bash
-# retry a make target until it succeeds
-# Usage: remake N MAKE_ARGS
-pkg=remake
-version=0.1
+# retry a program until it succeeds
+# Usage: retry N COMMAND ARGS
+pkg='retry'
+version='0.2'
 
 # get number of retries
 if [ "$1" -gt 0 ]; then
@@ -16,13 +16,15 @@ shift
 # loop through the tries
 for (( i = 0 ; i < tries ; ++i )) ; do
     echo "$pkg: attempt $i"
-    # run make
-    make "$@"
+    # run the program
+    "$@"
     status=$?
     # exit loop if successfully completed
     if [ $status -eq 0 ]; then
         break
-   fi
+    fi
+    # wait a bit
+    sleep 1
 done
 
 exit $status
