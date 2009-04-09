@@ -39,26 +39,26 @@
 #If an argument to a long option is mandatory, it is also mandatory for
 #the corresponding short option; the same is true for optional arguments.
 #
-#<tt>--bsub-options</tt> _BSUBOPTIONS_::
+#<tt>-b, --bsub-options</tt> _BSUBOPTIONS_::
 #    Pass along _BSUBOPTIONS_ to all bsub commands.
 #
-#<tt>--dependency</tt> _LSFJOBID_::
+#<tt>-d, --dependency</tt> _LSFJOBID_::
 #    Make the first set of jobs submitted have a dependency on
 #    _LSFJOBID_ (see --status to set type of dependency).
 #
-#<tt>--help</tt>::
+#<tt>-h, --help</tt>::
 #    Output this information.
 #
-#<tt>--id</tt> _ID_::
+#<tt>-i, --id</tt> _ID_::
 #    Specify unique identifier, _ID_, to incorporate into job name.
 #
-#<tt>--jobs</tt> N::
+#<tt>-j, --jobs</tt> N::
 #    Run N jobs on a single node.  N should be equal to the number of slots
 #    on each node.  The default N is 1.  Each target is sent to a single node
 #    using the <tt>span[hosts=1]</tt> resource specification to the bsub
 #    command.
 #
-#<tt>--lanes</tt> K,L,M,N::
+#<tt>-l, --lanes</tt> K,L,M,N::
 #    If there are bad lanes in a run and you do not want them
 #    analyzed, you can have the script only submit jobs for specific
 #    lane targets rather than all the lanes, 1 through 8.  Use
@@ -67,16 +67,16 @@
 #    and have a GERALD configuration file that selects specific lanes
 #    for analysis.
 #
-#<tt>--make</tt> _MAKE_::
+#<tt>-m, --make</tt> _MAKE_::
 #    Run MAKE rather than make(1).
 #
-#<tt>--path</tt> _PATH_::
+#<tt>-p, --path</tt> _PATH_::
 #    Run make in directory _PATH_ rather than current directory.
 #
 #<tt>--queue</tt> _QUEUE_::
 #    Submit all jobs to LSF queue _QUEUE_ rather than the default.
 #
-#<tt>--resource</tt> _RESOURCE_::
+#<tt>-R, --resource</tt> _RESOURCE_::
 #    In addition to the <tt>span[hosts=1]</tt> resource specification
 #    added to each bsub command, also specify the resource RESOURCE.
 #
@@ -84,14 +84,14 @@
 #    Use job status dependency of STATUS rather than done (finish normally
 #    with a zero exit value).
 #
-#<tt>--dry-run</tt>::
+#<tt>-n, --just-print, --dry-run, --recon</tt>::
 #    Just print out what commands would be run, do not actually submit
 #    any jobs.
 #
-#<tt>--quiet</tt>::
+#<tt>--quiet, --silent</tt>::
 #    Do not print out commands before executing them.
 #
-#<tt>--version</tt>::
+#<tt>-v, --version</tt>::
 #    Output command name and version.
 #
 #= EXAMPLES
@@ -148,13 +148,13 @@
 #If you determine the run will complete on 15 June at 2:30 p.m.,
 #then you can run the following command to submit the goat_pipeline.py job
 #
-#  $ bsub -q short -b 6:15:14:30 -J DIR.goat -o goat.out goat_pipeline.py --make --GERALD=gerald.config Run/DIR
+#  $ bsub --queue short -b 6:15:14:30 -J DIR.goat -o goat.out goat_pipeline.py --make --GERALD=gerald.config Run/DIR
 #
 #then use the <tt>-w</tt> option to bsub so lsgmake-gap will not
 #run until the goat jobs completes (the Firecrest directory must exist when
 #lsgmake-gap runs)
 #
-#  $ bsub -q short -w DIR.goat -o lsgmake-gap.out lsgmake-gap --path Run/DIR
+#  $ bsub --queue short -w DIR.goat -o lsgmake-gap.out lsgmake-gap --path Run/DIR
 #
 #If you run GERALD.pl after you have already run lsgmake-gap on the
 #Firecrest and Bustard directories, you can submit the GERALD jobs before
@@ -727,13 +727,13 @@ OptionParser.new do |opts|
   opts.on('-p', '--path PATH', 'Run make in directory PATH') do |path|
     options[:path] = path
   end
-  opts.on('-q', '--queue QUEUE', 'Submit jobs to LSF queue QUEUE') do |queue|
+  opts.on('--queue QUEUE', 'Submit jobs to LSF queue QUEUE') do |queue|
     BsubMake.queue = queue
   end
   opts.on('-R', '--resource RESOURCE', 'Resource specification for bsub') do |resource|
     BsubMake.resource = resource
   end
-  opts.on('-s', '--status STATUS', 'Use job dependency STATUS rather than done') do |status|
+  opts.on('--status STATUS', 'Use job dependency STATUS rather than done') do |status|
     BsubMake.status = status
   end
   opts.on('-n', '--just-print', '--dry-run', '--recon', 'Just echo commands, do not submit') do |x|
