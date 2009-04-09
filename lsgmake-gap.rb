@@ -148,13 +148,13 @@
 #If you determine the run will complete on 15 June at 2:30 p.m.,
 #then you can run the following command to submit the goat_pipeline.py job
 #
-#  $ bsub --queue short -b 6:15:14:30 -J DIR.goat -o goat.out goat_pipeline.py --make --GERALD=gerald.config Run/DIR
+#  $ bsub -q short -b 6:15:14:30 -J DIR.goat -o goat.out goat_pipeline.py --make --GERALD=gerald.config Run/DIR
 #
 #then use the <tt>-w</tt> option to bsub so lsgmake-gap will not
 #run until the goat jobs completes (the Firecrest directory must exist when
 #lsgmake-gap runs)
 #
-#  $ bsub --queue short -w DIR.goat -o lsgmake-gap.out lsgmake-gap --path Run/DIR
+#  $ bsub -q short -w DIR.goat -o lsgmake-gap.out lsgmake-gap --path Run/DIR
 #
 #If you run GERALD.pl after you have already run lsgmake-gap on the
 #Firecrest and Bustard directories, you can submit the GERALD jobs before
