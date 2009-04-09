@@ -84,9 +84,12 @@
 #    Use job status dependency of STATUS rather than done (finish normally
 #    with a zero exit value).
 #
-#<tt>--test</tt>::
+#<tt>--dry-run</tt>::
 #    Just print out what commands would be run, do not actually submit
 #    any jobs.
+#
+#<tt>--quiet</tt>::
+#    Do not print out commands before executing them.
 #
 #<tt>--version</tt>::
 #    Output command name and version.
@@ -224,7 +227,8 @@ class BsubMake
   @@queue = ''
   @@resource = ''
   @@status = 'done'
-  @@test = false
+  @@dryrun = false
+  @@quiet = false
 
   def initialize(job_name, target)
     # set job name, removing illegal characters
@@ -293,11 +297,19 @@ class BsubMake
   end
 
   # if true, print what would be run (do not submit jobs)
-  def self.test
-    @@test
+  def self.dryrun
+    @@dryrun
   end
-  def self.test=(test)
-    @@test = test
+  def self.dryrun=(dryrun)
+    @@dryrun = dryrun
+  end
+
+  # if false, print before running commands
+  def self.quiet
+    @@quiet
+  end
+  def self.quiet=(quiet)
+    @@quiet = quiet
   end
 
   # submit a job array
@@ -338,17 +350,18 @@ class BsubMake
     bsub.push('-j', @jobs.to_s) if @jobs > 1
     bsub.push(@target.gsub(/%I/, '${LSB_JOBINDEX}'))
 
-    # just echo if testing
-    bsub.unshift('echo') if @@test
+    # show command we're about to run
+    puts bsub.join(' ') if !@@quiet
 
     # run the command
+    return 0 if @@dryrun
     if !system(*bsub)
       return false
     end
     rv = $?.exitstatus
     @submitted = true
     # wait a bit
-    sleep 1 unless @@test
+    sleep 1
     rv
   end
 end
@@ -723,8 +736,11 @@ OptionParser.new do |opts|
   opts.on('-s', '--status STATUS', 'Use job dependency STATUS rather than done') do |status|
     BsubMake.status = status
   end
-  opts.on('-t', '--test', 'Just echo commands, do not submit') do |x|
-    BsubMake.test = true
+  opts.on('-n', '--just-print', '--dry-run', '--recon', 'Just echo commands, do not submit') do |x|
+    BsubMake.dryrun = true
+  end
+  opts.on('--quiet', '--silent', 'Do not print commands before executing') do |x|
+    BsubMake.quiet = true
   end
 end.parse! rescue RDoc::usage(1, 'synopsis', 'options')
 
