@@ -565,7 +565,7 @@ class BustardMake < SolexaMake
   # check version to set dependency chain
   def check_version
     @matrix = false
-    if (%r{^Bustard1.3}.match(File.basename(@path)))
+    if (%r{^Bustard1.[34]}.match(File.basename(@path)))
       @matrix = true
     end
   end
