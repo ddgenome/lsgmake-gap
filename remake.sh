@@ -1,29 +1,92 @@
 #! /bin/bash
 # retry a make until it succeeds, only using parallelization on the first attempt
-# Usage: remake N J MAKE_ARGS
 pkg='remake'
-version='0.1'
+version='0.2'
 
-# get number of retries
-if [ "$1" -gt 0 ]; then
-    tries="$1"
+# defaults
+retry=1
+jobs=1
+cmd=
+# loop through positional parameters
+prev_arg=
+optarg=
+for arg
+  do
+  if test -n "$prev_arg"; then
+      eval "$prev_arg=\$arg"
+      prev_arg=
+      continue
+  fi
+
+  case "$arg" in
+      -*=*) optarg=`echo "$arg" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+      *) optarg= ;;
+  esac
+
+  case "$arg" in
+      -h | --help | --hel | --he | --h)
+          cat <<EOF
+Usage: $pkg [OPTIONS]... [LOGIN]
+If an argument to a long option is mandatory, it is also mandatory for
+the corresponding short option; the same is true for optional arguments.
+
+Options:
+  -h,--help      print this message and exit
+  -j,--jobs=N    specifies the number of jobs, default 1
+  -r,--retry=N   number of times to retry a failed make, default 1
+  -v,--version   print version number and exit
+
+This script wraps around make and retries make if is fails.  Multiple
+jobs are only attempted on the first make.
+
+EOF
+          exit 0;;
+
+      --version | --versio | --versi | --vers | --ver | --ve)
+          echo "$pkg $version"
+          exit 0;;
+
+      -j | --jobs | --job | --jo | --j)
+          prev_arg=jobs
+          ;;
+
+      --jobs=* | --job=* | --jo=* | --j=*)
+          jobs="$optarg"
+          ;;
+
+      -r | --retry | --retr | --ret | --re | --r)
+          prev_arg=retry
+          ;;
+
+      --retry=* | --retr=* | --ret=* | --re=* | --r=*)
+          retry="$optarg"
+          ;;
+
+      *)
+          # use unrecognized arguments as make arguments
+          cmd="$cmd $arg"
+          ;;
+  esac
+done
+
+# check number of retries
+if [ "$retry" -gt 0 ]; then
+    :
 else
-    tries=2
-    echo "$pkg: invalid number of tries, using $tries"
+    retry=1
+    echo "$pkg: invalid number of tries, using $retry"
 fi
-shift
 
-# get number of jobs
-if [ "$1" -gt 0 ]; then
-    jobs="$1"
+# check number of jobs
+if [ "$jobs" -gt 0 ]; then
+    :
 else
     jobs=1
     echo "$pkg: invalid number of jobs, using $jobs"
 fi
-shift
 
 # loop through the tries
-for (( i = 0 ; i < tries ; ++i )) ; do
+for (( i = 0 ; i < retry ; ++i )) ; do
     echo "$pkg: attempt $i"
     make=make
     if [ $i = 0 ]; then
@@ -31,7 +94,7 @@ for (( i = 0 ; i < tries ; ++i )) ; do
     fi
 
     # run the program
-    $make "$@"
+    $make $cmd
     status=$?
     # exit loop if successfully completed
     if [ $status -eq 0 ]; then
