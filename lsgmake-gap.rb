@@ -565,7 +565,7 @@ class BustardMake < SolexaMake
   # check version to set dependency chain
   def check_version
     @matrix = false
-    if (%r{^Bustard1.[34]}.match(File.basename(@path)))
+    if (%r{^Bustard1.[3-6]}.match(File.basename(@path)))
       @matrix = true
     end
   end
@@ -795,3 +795,16 @@ if !make.submit
 end
 
 exit(0)
+
+__END__
+
+    # this will not work because older versions of Bustard had a
+    # higher version number (1.8)
+    bustard_re = %r{^Bustard(\d+\.\d+)}
+    bustard_m = bustard_re.match(File.basename(@path))
+    if bustard_m
+        bustard_version = bustard_m[1]
+        if Float(bustard_version) >= 1.3
+          @matrix = true
+        end
+    end
