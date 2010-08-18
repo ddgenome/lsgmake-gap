@@ -28,9 +28,13 @@
 #need to use provide the --with-qval option to goat_pipeline.py for
 #auto-calibration to work.
 #
-#The targets and dependencies in Bustard changed in GAPipeline1.3.  This
-#automatically detects that and adjusts the targets/dependencies
-#accordingly.
+#The targets and dependencies in Bustard changed in GAPipeline1.3.
+#This automatically detects that and adjusts the targets/dependencies
+#accordingly.  Note that Illumina has started reusing Bustard version
+#numbers (1.8 was used in SolexaPipeline and now is used in OLB).  If
+#Bustard version 1.8 or above is encountered, the script assumes it is
+#an OLB version with the new targets, not the SolexaPipeline version
+#with the old targets.
 #
 #Each target is submitted as a separate job to LSF and generates a separate
 #stdout/stderr file with a name like <tt>make-TARGET-JOBID.out</tt>.
@@ -565,7 +569,11 @@ class BustardMake < SolexaMake
   # check version to set dependency chain
   def check_version
     @matrix = false
-    if (%r{^Bustard1.[3-6]}.match(File.basename(@path)))
+    # this breaks compatibility with SolexaPipeline
+    bustard_re = Regexp.new('^Bustard(\d+.\d+)')
+    bustard_match = bustard_re.match(File.basename(@path))
+    bustard_version = bustard_match.captures[0].to_f
+    if (bustard_version >= 1.3)
       @matrix = true
     end
   end
