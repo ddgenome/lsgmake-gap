@@ -106,4 +106,5 @@ for (( i = 0 ; i < retry ; ++i )) ; do
     sleep 1
 done
 
+echo "[`date`] $pkg: exiting with status $status"
 exit $status
