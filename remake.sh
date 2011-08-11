@@ -87,15 +87,17 @@ fi
 
 # loop through the tries
 for (( i = 0 ; i < retry ; ++i )) ; do
-    echo "$pkg: attempt $i"
+    echo "[`date`] $pkg: attempt $i"
     make=make
     if [ $i = 0 ]; then
         make="$make -j $jobs"
     fi
 
     # run the program
+    echo "[`date`] $pkg: $make $cmd"
     $make $cmd
     status=$?
+    echo "[`date`] $pkg: \$?: $status for $make $cmd"
     # exit loop if successfully completed
     if [ $status -eq 0 ]; then
         break
