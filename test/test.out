@@ -1,0 +1,230 @@
+FirecrestMake: submitting offsets job
+bsub -n 4 -q seqmgr-long -R select[type==LINUX64] span[hosts=1] -o make-default_offsets.txt-%J.out -J stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.default_offsets -w ended(123456) make -j 4 default_offsets.txt
+FirecrestMake: submitting s_N job
+bsub -n 4 -q seqmgr-long -R select[type==LINUX64] span[hosts=1] -o make-s_%I-%J.out -J stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.s_N[2,4,7,8] -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.default_offsets) make -j 4 s_${LSB_JOBINDEX}
+FirecrestMake: submitting all job
+bsub -q seqmgr-long -R select[type==LINUX64] -o make-all-%J.out -J stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.all -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.s_N) make all
+BustardMake: submitting lane matrix job
+bsub -n 4 -q seqmgr-long -R select[type==LINUX64] span[hosts=1] -o make-matrix_%I_finished.txt-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.matrix_N_finished.txt[2,4,7,8] -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.all) make -j 4 matrix_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting matrix job
+bsub -n 4 -q seqmgr-long -R select[type==LINUX64] span[hosts=1] -o make-matrix-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.matrix -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.matrix_N_finished.txt) make -j 4 matrix
+BustardMake: submitting lane phasing job
+bsub -n 4 -q seqmgr-long -R select[type==LINUX64] span[hosts=1] -o make-phasing_%I_finished.txt-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.phasing_N_finished.txt[2,4,7,8] -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.matrix) make -j 4 phasing_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting phasing job
+bsub -n 4 -q seqmgr-long -R select[type==LINUX64] span[hosts=1] -o make-phasing_finished.txt-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.phasing -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.phasing_N_finished.txt) make -j 4 phasing_finished.txt
+BustardMake: submitting s_N job
+bsub -n 4 -q seqmgr-long -R select[type==LINUX64] span[hosts=1] -o make-s_%I-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.s_N[2,4,7,8] -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.phasing) make -j 4 s_${LSB_JOBINDEX}
+BustardMake: submitting all job
+bsub -q seqmgr-long -R select[type==LINUX64] -o make-all-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.all -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.s_N) make all
+GeraldMake: submitting tiles job
+bsub -n 4 -q seqmgr-long -R select[type==LINUX64] span[hosts=1] -o make-tiles.txt-%J.out -J stest.GERALD_15-01-2007_mhickenb.tiles -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.all) make -j 4 tiles.txt
+GeraldMake: submitting s_N job
+bsub -n 4 -q seqmgr-long -R select[type==LINUX64] span[hosts=1] -o make-s_%I-%J.out -J stest.GERALD_15-01-2007_mhickenb.s_N[2,4,7,8] -w ended(stest.GERALD_15-01-2007_mhickenb.tiles) make -j 4 s_${LSB_JOBINDEX}
+GeraldMake: submitting all job
+bsub -q seqmgr-long -R select[type==LINUX64] -o make-all-%J.out -J stest.GERALD_15-01-2007_mhickenb.all -w ended(stest.GERALD_15-01-2007_mhickenb.s_N) make all
+FirecrestMake: submitting offsets job
+bsub -q long -o make-default_offsets.txt-%J.out -J stest.C1-51-52-102_Firecrest1.3rc4_14-12-2008_mhickenb.default_offsets make default_offsets.txt
+FirecrestMake: submitting s_N job
+bsub -q long -o make-s_%I-%J.out -J stest.C1-51-52-102_Firecrest1.3rc4_14-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(stest.C1-51-52-102_Firecrest1.3rc4_14-12-2008_mhickenb.default_offsets) make s_${LSB_JOBINDEX}
+FirecrestMake: submitting all job
+bsub -q long -o make-all-%J.out -J stest.C1-51-52-102_Firecrest1.3rc4_14-12-2008_mhickenb.all -w done(stest.C1-51-52-102_Firecrest1.3rc4_14-12-2008_mhickenb.s_N) make all
+BustardMake: submitting lane matrix job
+bsub -q long -o make-matrix_%I_finished.txt-%J.out -J stest.Bustard1.3rc4_14-12-2008_mhickenb.matrix_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.C1-51-52-102_Firecrest1.3rc4_14-12-2008_mhickenb.all) make matrix_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting matrix job
+bsub -q long -o make-matrix-%J.out -J stest.Bustard1.3rc4_14-12-2008_mhickenb.matrix -w done(stest.Bustard1.3rc4_14-12-2008_mhickenb.matrix_N_finished.txt) make matrix
+BustardMake: submitting lane phasing job
+bsub -q long -o make-phasing_%I_finished.txt-%J.out -J stest.Bustard1.3rc4_14-12-2008_mhickenb.phasing_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.3rc4_14-12-2008_mhickenb.matrix) make phasing_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting phasing job
+bsub -q long -o make-phasing_finished.txt-%J.out -J stest.Bustard1.3rc4_14-12-2008_mhickenb.phasing -w done(stest.Bustard1.3rc4_14-12-2008_mhickenb.phasing_N_finished.txt) make phasing_finished.txt
+BustardMake: submitting s_N job
+bsub -q long -o make-s_%I-%J.out -J stest.Bustard1.3rc4_14-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.3rc4_14-12-2008_mhickenb.phasing) make s_${LSB_JOBINDEX}
+BustardMake: submitting all job
+bsub -q long -o make-all-%J.out -J stest.Bustard1.3rc4_14-12-2008_mhickenb.all -w done(stest.Bustard1.3rc4_14-12-2008_mhickenb.s_N) make all
+GeraldMake: submitting tiles job
+bsub -q long -o make-tiles.txt-%J.out -J stest.GERALD_15-12-2008_mhickenb.tiles -w done(stest.Bustard1.3rc4_14-12-2008_mhickenb.all) make tiles.txt
+GeraldMake: submitting qtable job
+bsub -q long -o make-s_5_QTABLES-%J.out -J stest.GERALD_15-12-2008_mhickenb.s_5_QTABLES -w done(stest.GERALD_15-12-2008_mhickenb.tiles) make s_5_QTABLES
+GeraldMake: submitting s_N job
+bsub -q long -o make-s_%I-%J.out -J stest.GERALD_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(stest.GERALD_15-12-2008_mhickenb.s_5_QTABLES) make s_${LSB_JOBINDEX}
+GeraldMake: submitting all job
+bsub -q long -o make-all-%J.out -J stest.GERALD_15-12-2008_mhickenb.all -w done(stest.GERALD_15-12-2008_mhickenb.s_N) make all
+FirecrestMake: submitting offsets job
+bsub -q long -o make-default_offsets.txt-%J.out -J stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.default_offsets make default_offsets.txt
+FirecrestMake: submitting s_N job
+bsub -q long -o make-s_%I-%J.out -J stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.default_offsets) make s_${LSB_JOBINDEX}
+FirecrestMake: submitting all job
+bsub -q long -o make-all-%J.out -J stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.all -w done(stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.s_N) make all
+BustardMake: submitting lane matrix job
+bsub -q long -o make-matrix_%I_finished.txt-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.matrix_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.all) make matrix_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting matrix job
+bsub -q long -o make-matrix-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.matrix -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.matrix_N_finished.txt) make matrix
+BustardMake: submitting lane phasing job
+bsub -q long -o make-phasing_%I_finished.txt-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.phasing_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.matrix) make phasing_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting phasing job
+bsub -q long -o make-phasing_finished.txt-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.phasing -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.phasing_N_finished.txt) make phasing_finished.txt
+BustardMake: submitting s_N job
+bsub -q long -o make-s_%I-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.phasing) make s_${LSB_JOBINDEX}
+BustardMake: submitting all job
+bsub -q long -o make-all-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.all -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.s_N) make all
+GeraldMake: submitting tiles job
+bsub -q long -o make-tiles.txt-%J.out -J stest.GERALD_15-12-2008_mhickenb.tiles -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.all) make tiles.txt
+GeraldMake: submitting qtable job
+bsub -q long -o make-s_5_QTABLES-%J.out -J stest.GERALD_15-12-2008_mhickenb.s_5_QTABLES -w done(stest.GERALD_15-12-2008_mhickenb.tiles) make s_5_QTABLES
+GeraldMake: submitting s_N job
+bsub -q long -o make-s_%I-%J.out -J stest.GERALD_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(stest.GERALD_15-12-2008_mhickenb.s_5_QTABLES) make s_${LSB_JOBINDEX}
+GeraldMake: submitting all job
+bsub -q long -o make-all-%J.out -J stest.GERALD_15-12-2008_mhickenb.all -w done(stest.GERALD_15-12-2008_mhickenb.s_N) make all
+FirecrestMake: submitting offsets job
+bsub -o make-default_offsets.txt-%J.out -J s32452345test.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.default_offsets make default_offsets.txt
+FirecrestMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J s32452345test.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(s32452345test.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.default_offsets) make s_${LSB_JOBINDEX}
+FirecrestMake: submitting all job
+bsub -o make-all-%J.out -J s32452345test.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.all -w done(s32452345test.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.s_N) make all
+BustardMake: submitting lane matrix job
+bsub -o make-matrix_%I_finished.txt-%J.out -J s32452345test.Bustard1.3rc4_15-12-2008_mhickenb.matrix_N_finished.txt[1,2,3,4,5,6,7,8] -w done(s32452345test.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.all) make matrix_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting matrix job
+bsub -o make-matrix-%J.out -J s32452345test.Bustard1.3rc4_15-12-2008_mhickenb.matrix -w done(s32452345test.Bustard1.3rc4_15-12-2008_mhickenb.matrix_N_finished.txt) make matrix
+BustardMake: submitting lane phasing job
+bsub -o make-phasing_%I_finished.txt-%J.out -J s32452345test.Bustard1.3rc4_15-12-2008_mhickenb.phasing_N_finished.txt[1,2,3,4,5,6,7,8] -w done(s32452345test.Bustard1.3rc4_15-12-2008_mhickenb.matrix) make phasing_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting phasing job
+bsub -o make-phasing_finished.txt-%J.out -J s32452345test.Bustard1.3rc4_15-12-2008_mhickenb.phasing -w done(s32452345test.Bustard1.3rc4_15-12-2008_mhickenb.phasing_N_finished.txt) make phasing_finished.txt
+BustardMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J s32452345test.Bustard1.3rc4_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(s32452345test.Bustard1.3rc4_15-12-2008_mhickenb.phasing) make s_${LSB_JOBINDEX}
+BustardMake: submitting all job
+bsub -o make-all-%J.out -J s32452345test.Bustard1.3rc4_15-12-2008_mhickenb.all -w done(s32452345test.Bustard1.3rc4_15-12-2008_mhickenb.s_N) make all
+GeraldMake: submitting tiles job
+bsub -o make-tiles.txt-%J.out -J s32452345test.GERALD_15-12-2008_mhickenb.tiles -w done(s32452345test.Bustard1.3rc4_15-12-2008_mhickenb.all) make tiles.txt
+GeraldMake: submitting qtable job
+bsub -o make-s_5_QTABLES-%J.out -J s32452345test.GERALD_15-12-2008_mhickenb.s_5_QTABLES -w done(s32452345test.GERALD_15-12-2008_mhickenb.tiles) make s_5_QTABLES
+GeraldMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J s32452345test.GERALD_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(s32452345test.GERALD_15-12-2008_mhickenb.s_5_QTABLES) make s_${LSB_JOBINDEX}
+GeraldMake: submitting all job
+bsub -o make-all-%J.out -J s32452345test.GERALD_15-12-2008_mhickenb.all -w done(s32452345test.GERALD_15-12-2008_mhickenb.s_N) make all
+FirecrestMake: submitting offsets job
+bsub -o make-default_offsets.txt-%J.out -J stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.default_offsets -M 6000000 make default_offsets.txt
+FirecrestMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.default_offsets) -M 6000000 make s_${LSB_JOBINDEX}
+FirecrestMake: submitting all job
+bsub -o make-all-%J.out -J stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.all -w done(stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.s_N) -M 6000000 make all
+BustardMake: submitting lane matrix job
+bsub -o make-matrix_%I_finished.txt-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.matrix_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.all) -M 6000000 make matrix_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting matrix job
+bsub -o make-matrix-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.matrix -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.matrix_N_finished.txt) -M 6000000 make matrix
+BustardMake: submitting lane phasing job
+bsub -o make-phasing_%I_finished.txt-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.phasing_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.matrix) -M 6000000 make phasing_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting phasing job
+bsub -o make-phasing_finished.txt-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.phasing -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.phasing_N_finished.txt) -M 6000000 make phasing_finished.txt
+BustardMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.phasing) -M 6000000 make s_${LSB_JOBINDEX}
+BustardMake: submitting all job
+bsub -o make-all-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.all -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.s_N) -M 6000000 make all
+GeraldMake: submitting tiles job
+bsub -o make-tiles.txt-%J.out -J stest.GERALD_15-12-2008_mhickenb.tiles -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.all) -M 6000000 make tiles.txt
+GeraldMake: submitting qtable job
+bsub -o make-s_5_QTABLES-%J.out -J stest.GERALD_15-12-2008_mhickenb.s_5_QTABLES -w done(stest.GERALD_15-12-2008_mhickenb.tiles) -M 6000000 make s_5_QTABLES
+GeraldMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J stest.GERALD_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(stest.GERALD_15-12-2008_mhickenb.s_5_QTABLES) -M 6000000 make s_${LSB_JOBINDEX}
+GeraldMake: submitting all job
+bsub -o make-all-%J.out -J stest.GERALD_15-12-2008_mhickenb.all -w done(stest.GERALD_15-12-2008_mhickenb.s_N) -M 6000000 make all
+FirecrestMake: submitting offsets job
+bsub -o make-default_offsets.txt-%J.out -J stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.default_offsets retry 2 make default_offsets.txt
+FirecrestMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.default_offsets) retry 2 make s_${LSB_JOBINDEX}
+FirecrestMake: submitting all job
+bsub -o make-all-%J.out -J stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.all -w done(stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.s_N) retry 2 make all
+BustardMake: submitting lane matrix job
+bsub -o make-matrix_%I_finished.txt-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.matrix_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.C1-159_Firecrest1.3rc4_15-12-2008_mhickenb.all) retry 2 make matrix_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting matrix job
+bsub -o make-matrix-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.matrix -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.matrix_N_finished.txt) retry 2 make matrix
+BustardMake: submitting lane phasing job
+bsub -o make-phasing_%I_finished.txt-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.phasing_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.matrix) retry 2 make phasing_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting phasing job
+bsub -o make-phasing_finished.txt-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.phasing -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.phasing_N_finished.txt) retry 2 make phasing_finished.txt
+BustardMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.phasing) retry 2 make s_${LSB_JOBINDEX}
+BustardMake: submitting all job
+bsub -o make-all-%J.out -J stest.Bustard1.3rc4_15-12-2008_mhickenb.all -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.s_N) retry 2 make all
+GeraldMake: submitting tiles job
+bsub -o make-tiles.txt-%J.out -J stest.GERALD_15-12-2008_mhickenb.tiles -w done(stest.Bustard1.3rc4_15-12-2008_mhickenb.all) retry 2 make tiles.txt
+GeraldMake: submitting qtable job
+bsub -o make-s_5_QTABLES-%J.out -J stest.GERALD_15-12-2008_mhickenb.s_5_QTABLES -w done(stest.GERALD_15-12-2008_mhickenb.tiles) retry 2 make s_5_QTABLES
+GeraldMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J stest.GERALD_15-12-2008_mhickenb.s_N[1,2,3,4,5,6,7,8] -w done(stest.GERALD_15-12-2008_mhickenb.s_5_QTABLES) retry 2 make s_${LSB_JOBINDEX}
+GeraldMake: submitting all job
+bsub -o make-all-%J.out -J stest.GERALD_15-12-2008_mhickenb.all -w done(stest.GERALD_15-12-2008_mhickenb.s_N) retry 2 make all
+FirecrestMake: submitting offsets job
+bsub -o make-default_offsets.txt-%J.out -J stest.C1-159_Firecrest1.4_15-12-2009_lims.default_offsets make default_offsets.txt
+FirecrestMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J stest.C1-159_Firecrest1.4_15-12-2009_lims.s_N[1,2,3,4,5,6,7,8] -w done(stest.C1-159_Firecrest1.4_15-12-2009_lims.default_offsets) make s_${LSB_JOBINDEX}
+FirecrestMake: submitting all job
+bsub -o make-all-%J.out -J stest.C1-159_Firecrest1.4_15-12-2009_lims.all -w done(stest.C1-159_Firecrest1.4_15-12-2009_lims.s_N) make all
+BustardMake: submitting lane matrix job
+bsub -o make-matrix_%I_finished.txt-%J.out -J stest.Bustard1.4_15-12-2009_lims.matrix_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.C1-159_Firecrest1.4_15-12-2009_lims.all) make matrix_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting matrix job
+bsub -o make-matrix-%J.out -J stest.Bustard1.4_15-12-2009_lims.matrix -w done(stest.Bustard1.4_15-12-2009_lims.matrix_N_finished.txt) make matrix
+BustardMake: submitting lane phasing job
+bsub -o make-phasing_%I_finished.txt-%J.out -J stest.Bustard1.4_15-12-2009_lims.phasing_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.4_15-12-2009_lims.matrix) make phasing_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting phasing job
+bsub -o make-phasing_finished.txt-%J.out -J stest.Bustard1.4_15-12-2009_lims.phasing -w done(stest.Bustard1.4_15-12-2009_lims.phasing_N_finished.txt) make phasing_finished.txt
+BustardMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J stest.Bustard1.4_15-12-2009_lims.s_N[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.4_15-12-2009_lims.phasing) make s_${LSB_JOBINDEX}
+BustardMake: submitting all job
+bsub -o make-all-%J.out -J stest.Bustard1.4_15-12-2009_lims.all -w done(stest.Bustard1.4_15-12-2009_lims.s_N) make all
+GeraldMake: submitting tiles job
+bsub -o make-tiles.txt-%J.out -J stest.GERALD_15-12-2009_lims.tiles -w done(stest.Bustard1.4_15-12-2009_lims.all) make tiles.txt
+GeraldMake: submitting qtable job
+bsub -o make-s_5_QTABLES-%J.out -J stest.GERALD_15-12-2009_lims.s_5_QTABLES -w done(stest.GERALD_15-12-2009_lims.tiles) make s_5_QTABLES
+GeraldMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J stest.GERALD_15-12-2009_lims.s_N[1,2,3,4,5,6,7,8] -w done(stest.GERALD_15-12-2009_lims.s_5_QTABLES) make s_${LSB_JOBINDEX}
+GeraldMake: submitting all job
+bsub -o make-all-%J.out -J stest.GERALD_15-12-2009_lims.all -w done(stest.GERALD_15-12-2009_lims.s_N) make all
+FirecrestMake: submitting offsets job
+bsub -n 2 -R  span[hosts=1] -o make-default_offsets.txt-%J.out -J stest.C1-159_Firecrest1.4_15-12-2009_lims.default_offsets remake --retry=2 -j 2 default_offsets.txt
+FirecrestMake: submitting s_N job
+bsub -n 2 -R  span[hosts=1] -o make-s_%I-%J.out -J stest.C1-159_Firecrest1.4_15-12-2009_lims.s_N[1,2,3,4,5,6,7,8] -w done(stest.C1-159_Firecrest1.4_15-12-2009_lims.default_offsets) remake --retry=2 -j 2 s_${LSB_JOBINDEX}
+FirecrestMake: submitting all job
+bsub -o make-all-%J.out -J stest.C1-159_Firecrest1.4_15-12-2009_lims.all -w done(stest.C1-159_Firecrest1.4_15-12-2009_lims.s_N) remake --retry=2 all
+BustardMake: submitting lane matrix job
+bsub -n 2 -R  span[hosts=1] -o make-matrix_%I_finished.txt-%J.out -J stest.Bustard1.4_15-12-2009_lims.matrix_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.C1-159_Firecrest1.4_15-12-2009_lims.all) remake --retry=2 -j 2 matrix_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting matrix job
+bsub -n 2 -R  span[hosts=1] -o make-matrix-%J.out -J stest.Bustard1.4_15-12-2009_lims.matrix -w done(stest.Bustard1.4_15-12-2009_lims.matrix_N_finished.txt) remake --retry=2 -j 2 matrix
+BustardMake: submitting lane phasing job
+bsub -n 2 -R  span[hosts=1] -o make-phasing_%I_finished.txt-%J.out -J stest.Bustard1.4_15-12-2009_lims.phasing_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.4_15-12-2009_lims.matrix) remake --retry=2 -j 2 phasing_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting phasing job
+bsub -n 2 -R  span[hosts=1] -o make-phasing_finished.txt-%J.out -J stest.Bustard1.4_15-12-2009_lims.phasing -w done(stest.Bustard1.4_15-12-2009_lims.phasing_N_finished.txt) remake --retry=2 -j 2 phasing_finished.txt
+BustardMake: submitting s_N job
+bsub -n 2 -R  span[hosts=1] -o make-s_%I-%J.out -J stest.Bustard1.4_15-12-2009_lims.s_N[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.4_15-12-2009_lims.phasing) remake --retry=2 -j 2 s_${LSB_JOBINDEX}
+BustardMake: submitting all job
+bsub -o make-all-%J.out -J stest.Bustard1.4_15-12-2009_lims.all -w done(stest.Bustard1.4_15-12-2009_lims.s_N) remake --retry=2 all
+GeraldMake: submitting tiles job
+bsub -n 2 -R  span[hosts=1] -o make-tiles.txt-%J.out -J stest.GERALD_15-12-2009_lims.tiles -w done(stest.Bustard1.4_15-12-2009_lims.all) remake --retry=2 -j 2 tiles.txt
+GeraldMake: submitting qtable job
+bsub -n 2 -R  span[hosts=1] -o make-s_5_QTABLES-%J.out -J stest.GERALD_15-12-2009_lims.s_5_QTABLES -w done(stest.GERALD_15-12-2009_lims.tiles) remake --retry=2 -j 2 s_5_QTABLES
+GeraldMake: submitting s_N job
+bsub -n 2 -R  span[hosts=1] -o make-s_%I-%J.out -J stest.GERALD_15-12-2009_lims.s_N[1,2,3,4,5,6,7,8] -w done(stest.GERALD_15-12-2009_lims.s_5_QTABLES) remake --retry=2 -j 2 s_${LSB_JOBINDEX}
+GeraldMake: submitting all job
+bsub -o make-all-%J.out -J stest.GERALD_15-12-2009_lims.all -w done(stest.GERALD_15-12-2009_lims.s_N) remake --retry=2 all
+FirecrestMake: submitting offsets job
+bsub -o make-default_offsets.txt-%J.out -J stest.C1-202_Firecrest1.6.0_15-12-2009_lims.default_offsets make default_offsets.txt
+FirecrestMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J stest.C1-202_Firecrest1.6.0_15-12-2009_lims.s_N[1,2,3,4,5,6,7,8] -w done(stest.C1-202_Firecrest1.6.0_15-12-2009_lims.default_offsets) make s_${LSB_JOBINDEX}
+FirecrestMake: submitting all job
+bsub -o make-all-%J.out -J stest.C1-202_Firecrest1.6.0_15-12-2009_lims.all -w done(stest.C1-202_Firecrest1.6.0_15-12-2009_lims.s_N) make all
+BustardMake: submitting lane matrix job
+bsub -o make-matrix_%I_finished.txt-%J.out -J stest.Bustard1.6.0_15-12-2009_lims.matrix_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.C1-202_Firecrest1.6.0_15-12-2009_lims.all) make matrix_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting matrix job
+bsub -o make-matrix-%J.out -J stest.Bustard1.6.0_15-12-2009_lims.matrix -w done(stest.Bustard1.6.0_15-12-2009_lims.matrix_N_finished.txt) make matrix
+BustardMake: submitting lane phasing job
+bsub -o make-phasing_%I_finished.txt-%J.out -J stest.Bustard1.6.0_15-12-2009_lims.phasing_N_finished.txt[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.6.0_15-12-2009_lims.matrix) make phasing_${LSB_JOBINDEX}_finished.txt
+BustardMake: submitting phasing job
+bsub -o make-phasing_finished.txt-%J.out -J stest.Bustard1.6.0_15-12-2009_lims.phasing -w done(stest.Bustard1.6.0_15-12-2009_lims.phasing_N_finished.txt) make phasing_finished.txt
+BustardMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J stest.Bustard1.6.0_15-12-2009_lims.s_N[1,2,3,4,5,6,7,8] -w done(stest.Bustard1.6.0_15-12-2009_lims.phasing) make s_${LSB_JOBINDEX}
+BustardMake: submitting all job
+bsub -o make-all-%J.out -J stest.Bustard1.6.0_15-12-2009_lims.all -w done(stest.Bustard1.6.0_15-12-2009_lims.s_N) make all
+GeraldMake: submitting tiles job
+bsub -o make-tiles.txt-%J.out -J stest.GERALD_15-12-2009_lims.tiles -w done(stest.Bustard1.6.0_15-12-2009_lims.all) make tiles.txt
+GeraldMake: submitting s_N job
+bsub -o make-s_%I-%J.out -J stest.GERALD_15-12-2009_lims.s_N[1,2,3,4,5,6,7,8] -w done(stest.GERALD_15-12-2009_lims.tiles) make s_${LSB_JOBINDEX}
+GeraldMake: submitting all job
+bsub -o make-all-%J.out -J stest.GERALD_15-12-2009_lims.all -w done(stest.GERALD_15-12-2009_lims.s_N) make all

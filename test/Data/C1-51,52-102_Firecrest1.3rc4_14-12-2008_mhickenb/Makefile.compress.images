@@ -1,0 +1,18 @@
+# Makefile for compressing Images
+GZIP?=gzip 
+GUNZIP?=gunzip 
+BZIP2?=bzip2
+BUNZIP2?=bunzip2
+imagepath?=../../Images
+
+.PHONY: compress_images uncompress_images
+
+compress_images: $(addsuffix .bz2,$(wildcard $(addsuffix /*.tif,$(wildcard $(addsuffix /C*,$(wildcard $(imagepath)/L*))))))
+
+%.tif.bz2: %.tif
+	$(BZIP2) $^ 
+
+uncompress_images: $(addsuffix .tif,$(wildcard $(addsuffix /*.tif.bz2,$(wildcard $(addsuffix /C*,$(wildcard $(imagepath)/L*))))))
+
+%.bz2.tif: %.bz2
+	$(BUNZIP2) $^ 

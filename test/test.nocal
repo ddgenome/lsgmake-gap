@@ -1,0 +1,21 @@
+FirecrestMake: submitting offsets job
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-default_offsets.txt-%J.out -J stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.default_offsets -w ended(123456) make -j 4 default_offsets.txt
+FirecrestMake: submitting s_N jobs
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_%I-%J.out -J stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.s_N[2,4,7,8] -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.default_offsets) make -j 4 s_${LSB_JOBINDEX}
+FirecrestMake: submitting all job
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-all-%J.out -J stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.all -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.s_N) make -j 4 all
+BustardMake: submitting lane phasing jobs
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-Phasing-s_%I_phasing.xml-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.Phasing-s_N_phasing.xml[2,4,7,8] -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.all) make -j 4 Phasing/s_${LSB_JOBINDEX}_phasing.xml
+BustardMake: submitting phasing job
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-Phasing-phasing.xml-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.phasing -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.Phasing-s_N_phasing.xml) make -j 4 Phasing/phasing.xml
+BustardMake: submitting s_N jobs
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_%I-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.s_N[2,4,7,8] -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.phasing) make -j 4 s_${LSB_JOBINDEX}
+BustardMake: submitting all job
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-all-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.all -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.s_N) make -j 4 all
+GeraldMake: submitting tiles job
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-tiles.txt-%J.out -J stest.GERALD_15-01-2007_mhickenb.tiles -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.all) make -j 4 tiles.txt
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_%I_qvals-%J.out -J stest.GERALD_15-01-2007_mhickenb.s_N_qvals[2,4,7,8] -w ended(stest.GERALD_15-01-2007_mhickenb.tiles) make -j 4 s_${LSB_JOBINDEX}_qvals
+GeraldMake: submitting s_N jobs
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_%I-%J.out -J stest.GERALD_15-01-2007_mhickenb.s_N[2,4,7,8] -w ended(stest.GERALD_15-01-2007_mhickenb.s_N_qvals) make -j 4 s_${LSB_JOBINDEX}
+GeraldMake: submitting all job
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-all-%J.out -J stest.GERALD_15-01-2007_mhickenb.all -w ended(stest.GERALD_15-01-2007_mhickenb.s_N) make -j 4 all

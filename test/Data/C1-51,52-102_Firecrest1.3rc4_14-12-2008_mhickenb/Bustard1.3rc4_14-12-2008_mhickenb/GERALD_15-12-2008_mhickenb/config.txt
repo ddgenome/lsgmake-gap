@@ -1,0 +1,11 @@
+EMAIL_LIST solexa@watson.wustl.edu
+EMAIL_SERVER gscsmtp.wustl.edu
+EMAIL_DOMAIN watson.wustl.edu
+WEB_DIR_ROOT https://gscweb.gsc.wustl.edu/gscmnt/
+NUM_LEADING_DIRS_TO_STRIP 1
+ANALYSIS eland_pair
+USE_BASES Y*n,Y*n
+ELAND_GENOME /gscmnt/temp210/techd/solexa/reference_sequences/Homo_sapiens.NCBI36.47.c
+5:ELAND_GENOME /gscmnt/temp210/techd/solexa/reference_sequences/solexa_control
+QCAL_SOURCE auto5
+ELAND_MULTIPLE_INSTANCES 8

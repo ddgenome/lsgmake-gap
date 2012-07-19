@@ -1,0 +1,24 @@
+# Makefile for compressing Bustard folders
+GZIP?=gzip 
+GUNZIP?=gunzip 
+BZIP2?=bzip2
+BUNZIP2?=bunzip2
+
+.PHONY: compress uncompress
+
+sigfiles:=$(wildcard *_sig.txt)
+sig2files:=$(wildcard *_sig2.txt)
+zipfiles:=$(wildcard *.gz)
+subsigfiles:=$(wildcard $(addsuffix /*_sig.txt,$(wildcard Bustard/L*)))
+subsig2files:=$(wildcard $(addsuffix /*_sig2.txt,$(wildcard Bustard/L*)))
+subprbfiles:=$(wildcard $(addsuffix /*_prb.txt,$(wildcard Bustard/L*)))
+subzipfiles:=$(wildcard $(addsuffix /*.gz,$(wildcard Bustard/L*)))
+
+compress: $(addsuffix .gz,$(subsigfiles)) $(addsuffix .gz,$(subsig2files)) $(addsuffix .gz,$(subprbfiles)) $(addsuffix .gz,$(sigfiles)) $(addsuffix .gz,$(sig2files))
+	@echo Finished compressing Bustard folder...
+uncompress: $(addsuffix .txt,$(zipfiles)) $(addsuffix .txt,$(subzipfiles))
+
+%.txt.gz: %.txt
+	$(GZIP) $^
+%.gz.txt: %.gz
+	$(GUNZIP) $^

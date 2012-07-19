@@ -1,0 +1,32 @@
+FirecrestMake: submitting offsets job
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-default_offsets.txt-%J.out -J stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.default_offsets -w ended(123456) make -j 4 default_offsets.txt
+FirecrestMake: submitting s_N jobs
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_2-%J.out -J stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.s_2 -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.default_offsets) make -j 4 s_2
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_4-%J.out -J stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.s_4 -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.default_offsets) make -j 4 s_4
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_7-%J.out -J stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.s_7 -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.default_offsets) make -j 4 s_7
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_8-%J.out -J stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.s_8 -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.default_offsets) make -j 4 s_8
+FirecrestMake: submitting all job
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-all-%J.out -J stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.all -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.s_2) && ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.s_4) && ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.s_7) && ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.s_8) make -j 4 all
+BustardMake: submitting lane phasing jobs
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-Phasing-s_2_phasing.xml-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.Phasing-s_2_phasing.xml -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.all) make -j 4 Phasing/s_2_phasing.xml
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-Phasing-s_4_phasing.xml-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.Phasing-s_4_phasing.xml -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.all) make -j 4 Phasing/s_4_phasing.xml
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-Phasing-s_7_phasing.xml-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.Phasing-s_7_phasing.xml -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.all) make -j 4 Phasing/s_7_phasing.xml
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-Phasing-s_8_phasing.xml-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.Phasing-s_8_phasing.xml -w ended(stest.C1-33_Firecrest1.8.26_14-01-2007_mhickenb.all) make -j 4 Phasing/s_8_phasing.xml
+BustardMake: submitting phasing job
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-Phasing-phasing.xml-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.phasing -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.Phasing-s_2_phasing.xml) && ended(stest.Bustard1.8.26_14-01-2007_mhickenb.Phasing-s_4_phasing.xml) && ended(stest.Bustard1.8.26_14-01-2007_mhickenb.Phasing-s_7_phasing.xml) && ended(stest.Bustard1.8.26_14-01-2007_mhickenb.Phasing-s_8_phasing.xml) make -j 4 Phasing/phasing.xml
+BustardMake: submitting s_N jobs
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_2-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.s_2 -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.phasing) make -j 4 s_2
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_4-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.s_4 -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.phasing) make -j 4 s_4
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_7-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.s_7 -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.phasing) make -j 4 s_7
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_8-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.s_8 -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.phasing) make -j 4 s_8
+BustardMake: submitting all job
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-all-%J.out -J stest.Bustard1.8.26_14-01-2007_mhickenb.all -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.s_2) && ended(stest.Bustard1.8.26_14-01-2007_mhickenb.s_4) && ended(stest.Bustard1.8.26_14-01-2007_mhickenb.s_7) && ended(stest.Bustard1.8.26_14-01-2007_mhickenb.s_8) make -j 4 all
+GeraldMake: submitting tiles job
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-tiles.txt-%J.out -J stest.GERALD_15-01-2007_mhickenb.tiles -w ended(stest.Bustard1.8.26_14-01-2007_mhickenb.all) make -j 4 tiles.txt
+GeraldMake: submitting s_N jobs
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_2-%J.out -J stest.GERALD_15-01-2007_mhickenb.s_2 -w ended(stest.GERALD_15-01-2007_mhickenb.tiles) make -j 4 s_2
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_4-%J.out -J stest.GERALD_15-01-2007_mhickenb.s_4 -w ended(stest.GERALD_15-01-2007_mhickenb.tiles) make -j 4 s_4
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_7-%J.out -J stest.GERALD_15-01-2007_mhickenb.s_7 -w ended(stest.GERALD_15-01-2007_mhickenb.tiles) make -j 4 s_7
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-s_8-%J.out -J stest.GERALD_15-01-2007_mhickenb.s_8 -w ended(stest.GERALD_15-01-2007_mhickenb.tiles) make -j 4 s_8
+GeraldMake: submitting all job
+bsub -n 4 -q seqmgr-long -R span[hosts=1] select[type==LINUX64] -o make-all-%J.out -J stest.GERALD_15-01-2007_mhickenb.all -w ended(stest.GERALD_15-01-2007_mhickenb.s_2) && ended(stest.GERALD_15-01-2007_mhickenb.s_4) && ended(stest.GERALD_15-01-2007_mhickenb.s_7) && ended(stest.GERALD_15-01-2007_mhickenb.s_8) make -j 4 all

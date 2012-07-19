@@ -1,0 +1,24 @@
+# Makefile for compressing Images and Firecrest folders
+GZIP?=gzip 
+GUNZIP?=gunzip 
+BZIP2?=bzip2
+BUNZIP2?=bunzip2
+
+.PHONY: compress uncompress
+
+intfiles:=$(wildcard *_int.txt)
+nsefiles:=$(wildcard *_nse.txt)
+zipfiles:=$(wildcard *.gz)
+subintfiles:=$(wildcard $(addsuffix /*_int.txt,$(wildcard Firecrest/L*)))
+subnsefiles:=$(wildcard $(addsuffix /*_nse.txt,$(wildcard Firecrest/L*)))
+subclufiles:=$(wildcard $(addsuffix /*_clu.txt,$(wildcard Firecrest/L*)))
+subzipfiles:=$(wildcard $(addsuffix /*.gz,$(wildcard Firecrest/L*)))
+
+compress: $(addsuffix .gz,$(subintfiles)) $(addsuffix .gz,$(subnsefiles)) $(addsuffix .gz,$(subclufiles)) $(addsuffix .gz,$(intfiles)) $(addsuffix .gz,$(nsefiles))
+	@echo Compression finished...
+uncompress: $(addsuffix .txt,$(zipfiles)) $(addsuffix .txt,$(subzipfiles))
+
+%.txt.gz: %.txt
+	$(GZIP) $^
+%.gz.txt: %.gz
+	$(GUNZIP) $^
